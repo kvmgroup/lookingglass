@@ -12,6 +12,10 @@ ip6tables -A INPUT -p tcp --dport 2750 -s 127.0.0.0/8 -j ACCEPT
 # Drop outside access to port 2750
 iptables -A INPUT -p tcp --dport 2750 -j DROP
 ip6tables -A INPUT -p tcp --dport 2750 -j DROP
+
+# Save iptables
+iptables-save
+ip6tables-save
 ```
 
 # security issues
