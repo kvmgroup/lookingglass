@@ -24,7 +24,7 @@ app.post('/', (req, res) => {
 
         switch(command) {
             case "mtr":
-                args = [ "-c", "8", payload ]
+                args = [ "-c", "8", "--report", "--report-wide", payload ]
                 cmd = "/bin/mtr";
                 break;
             case "traceroute":
