@@ -20,22 +20,26 @@ app.post('/', (req, res) => {
 
     if (isIp(payload) || isValidDomain(payload)) {
         let cmd = "/bin/ping"
+        let args = [ "-c", "4", payload ]
 
         switch(command) {
             case "mtr":
+                args = [ "-c", "8", payload ]
                 cmd = "/bin/mtr";
                 break;
             case "traceroute":
+                args = [ payload ]
                 cmd = "/bin/traceroute";
                 break;
             case "ping":
+                args = [ "-c", "8", payload ]
                 cmd = "/bin/ping";
                 break;
             default:
                 cmd = "/bin/ping";
         }
     
-        let subprocess = spawn(cmd, [ payload ]);
+        let subprocess = spawn(cmd, args);
         let stderr = '';
         let stdout = '';
         subprocess.stdout.on('data', function(data) {
