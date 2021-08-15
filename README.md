@@ -13,3 +13,7 @@ ip6tables -A INPUT -p tcp --dport 2750 -s 127.0.0.0/8 -j ACCEPT
 iptables -A INPUT -p tcp --dport 2750 -j DROP
 ip6tables -A INPUT -p tcp --dport 2750 -j DROP
 ```
+
+# security issues
+
+Please send us any security issues first via email at `kjartan [ätt] kvm [döt] group]`. We ask you to report to us privately in the interest of fixing the security vulnerability before putting active instalations at risk.
