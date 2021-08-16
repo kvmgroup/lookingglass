@@ -1,3 +1,5 @@
+> :warning: **This README is out of date**. It will be updated soon but installation instructions are **not functional** in their current state.
+
 # lookingglass
 Looking glass for AS211350
 
