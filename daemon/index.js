@@ -59,7 +59,7 @@ fastify.get('/', async (request, reply) => {
     }
 });
 
-fastify.post('/command/:action', (request, reply) => {
+fastify.post('/run', (request, reply) => {
     const { command, payload } = request.body;
     if (isIp(payload) || isValidDomain(payload)) {
         let cmd = "/bin/ping"
