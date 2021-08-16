@@ -121,7 +121,7 @@ fastify.post('/command/:action', (request, reply) => {
 
 const start = async () => {
     try {
-        await fastify.listen(process.env.DAEMON_PORT)
+        await fastify.listen(process.env.DAEMON_PORT, '0.0.0.0')
     } catch (err) {
         fastify.log.error(err)
         process.exit(1)
