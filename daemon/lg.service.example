@@ -1,0 +1,12 @@
+[Unit]
+Description=LookingGlass Command Daemon
+Documentation=https://github.com/kvmgroup/lookingglass
+After=network.target
+
+[Service]
+User=root
+ExecStart=/usr/bin/node /srv/lg/daemon/index.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
