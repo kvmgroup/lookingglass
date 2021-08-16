@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Looking Glass for AS211350",
   "main": "index.js",
+  "repository": "https://github.com/kvmgroup/lookingglass",
   "author": "KVM Group Limited",
   "license": "MIT",
   "dependencies": {
