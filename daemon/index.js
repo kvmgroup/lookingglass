@@ -5,32 +5,25 @@ const log_prefix = '(LookingGlass-Daemon)';
 if (!process.env.NODE_NAME) {
     console.log(`${log_prefix} Missing key "NODE_NAME" in .env. It must be a string, without spaces, containing the node name.`);
     process.exit(1);
-}
-if (!process.env.NODE_COUNTRY) {
+} if (!process.env.NODE_COUNTRY) {
     console.log(`${log_prefix} Missing key "NODE_COUNTRY" in .env. It must be a two character string containing the node's country ISO-3166-2 code.`);
     process.exit(1);
-}
-if (process.env.NODE_COUNTRY.length !== 2) {
+} if (process.env.NODE_COUNTRY.length !== 2) {
     console.log(`${log_prefix} Invalid value for key "NODE_COUNTRY" in .env. It must be a two character string containing the node's country ISO-3166-2 code.`);
     process.exit(1);
-}
-if (!process.env.DAEMON_PORT) {
+} if (!process.env.DAEMON_PORT) {
     console.log(`${log_prefix} Missing key "DAEMON_PORT" in .env. It must be the port the daemon will listen on.`);
     process.exit(1);
-}
-if (!process.env.SSL_ENABLE) {
+} if (!process.env.SSL_ENABLE) {
     console.log(`${log_prefix} Missing key "SSL_ENABLE" in .env. It must be either "true" or "false".`);
     process.exit(1);
-}
-if (process.env.SSL_ENABLE !== "true" && process.env.SSL_ENABLE !== "false") {
+} if (process.env.SSL_ENABLE !== "true" && process.env.SSL_ENABLE !== "false") {
     console.log(`${log_prefix} Invalid value for key "SSL_ENABLE" in .env. It must be either "true" or "false".`);
     process.exit(1);
-}
-if (process.env.SSL_ENABLE === "true" && !process.env.SSL_CERTIFICATE) {
+} if (process.env.SSL_ENABLE === "true" && !process.env.SSL_CERTIFICATE) {
     console.log(`${log_prefix} Missing key "SSL_CERTIFICATE" in .env. With SSL enabled it must contain the path to the SSL certificate.`);
     process.exit(1);
-}
-if (process.env.SSL_ENABLE === "true" && !process.env.SSL_KEY) {
+} if (process.env.SSL_ENABLE === "true" && !process.env.SSL_KEY) {
     console.log(`${log_prefix} Missing key "SSL_KEY" in .env. With SSL enabled it must contain the path to the SSL certificate private key.`);
     process.exit(1);
 }
