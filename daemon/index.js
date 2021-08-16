@@ -20,11 +20,17 @@ if (!process.env.NODE_NAME) {
 } if (process.env.SSL_ENABLE !== "true" && process.env.SSL_ENABLE !== "false") {
     console.log(`${log_prefix} Invalid value for key "SSL_ENABLE" in .env. It must be either "true" or "false".`);
     process.exit(1);
+} if (process.env.AUTH_ENABLE !== "true" && process.env.AUTH_ENABLE !== "false") {
+    console.log(`${log_prefix} Invalid value for key "AUTH_ENABLE" in .env. It must be either "true" or "false".`);
+    process.exit(1);
 } if (process.env.SSL_ENABLE === "true" && !process.env.SSL_CERTIFICATE) {
     console.log(`${log_prefix} Missing key "SSL_CERTIFICATE" in .env. With SSL enabled it must contain the path to the SSL certificate.`);
     process.exit(1);
 } if (process.env.SSL_ENABLE === "true" && !process.env.SSL_KEY) {
     console.log(`${log_prefix} Missing key "SSL_KEY" in .env. With SSL enabled it must contain the path to the SSL certificate private key.`);
+    process.exit(1);
+} if (process.env.AUTH_ENABLE === "true" && !process.env.AUTH_TOKEN) {
+    console.log(`${log_prefix} Missing key "AUTH_TOKEN" in .env. With authentication enabled it must contain a secret authorization token for communicating with the daemon.`);
     process.exit(1);
 }
 
@@ -53,6 +59,13 @@ fastify.get('/', async (request, reply) => {
 });
 
 fastify.post('/run', (request, reply) => {
+    if (!request.headers.authorization || (process.env.AUTH_ENABLE === "true" && process.env.AUTH_TOKEN !== request.headers.authorization.split(' ')[1])) {
+        return reply.code(401).send({
+            success: false,
+            code: 702,
+            error: 'Invalid authorization header'
+        });
+    }
     const { command, payload } = request.body;
     if (isIp(payload) || isValidDomain(payload)) {
         let cmd = "/bin/ping"
