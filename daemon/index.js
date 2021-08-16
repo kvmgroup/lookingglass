@@ -23,6 +23,9 @@ if (!process.env.NODE_NAME) {
 } if (process.env.AUTH_ENABLE !== "true" && process.env.AUTH_ENABLE !== "false") {
     console.log(`${log_prefix} Invalid value for key "AUTH_ENABLE" in .env. It must be either "true" or "false".`);
     process.exit(1);
+} if (process.env.RATELIMIT_ENABLE !== "true" && process.env.RATELIMIT_ENABLE !== "false") {
+    console.log(`${log_prefix} Invalid value for key "RATELIMIT_ENABLE" in .env. It must be either "true" or "false".`);
+    process.exit(1);
 } if (process.env.SSL_ENABLE === "true" && !process.env.SSL_CERTIFICATE) {
     console.log(`${log_prefix} Missing key "SSL_CERTIFICATE" in .env. With SSL enabled it must contain the path to the SSL certificate.`);
     process.exit(1);
@@ -31,6 +34,18 @@ if (!process.env.NODE_NAME) {
     process.exit(1);
 } if (process.env.AUTH_ENABLE === "true" && !process.env.AUTH_TOKEN) {
     console.log(`${log_prefix} Missing key "AUTH_TOKEN" in .env. With authentication enabled it must contain a secret authorization token for communicating with the daemon.`);
+    process.exit(1);
+} if (process.env.RATELIMIT_ENABLE === "true" && !process.env.RATELIMIT_WINDOW) {
+    console.log(`${log_prefix} Missing key "RATELIMIT_WINDOW" in .env. With rate limiting enabled it must be the window size in milliseconds.`);
+    process.exit(1);
+} if (process.env.RATELIMIT_ENABLE === "true" && !process.env.RATELIMIT_MAX) {
+    console.log(`${log_prefix} Missing key "RATELIMIT_MAX" in .env. With rate limiting enabled it must be the max amount of requests a client can send within the given window.`);
+    process.exit(1);
+} if (process.env.RATELIMIT_ENABLE === "true" && isNaN(process.env.RATELIMIT_WINDOW)) {
+    console.log(`${log_prefix} Invalid value for key "RATELIMIT_WINDOW" in .env. It must be the millisecond size of the rate limit window.`);
+    process.exit(1);
+} if (process.env.RATELIMIT_ENABLE === "true" && isNaN(process.env.RATELIMIT_MAX)) {
+    console.log(`${log_prefix} Invalid value for key "RATELIMIT_NAX" in .env. It must be the numeric value of the maximum amount of requests a client can send within the window.`);
     process.exit(1);
 }
 
@@ -45,6 +60,13 @@ const fastify = require('fastify')({
 const { spawn } = require('child_process');
 const isIp = require('is-ip');
 const isValidDomain = require('is-valid-domain')
+
+if (process.env.RATELIMIT_ENABLE === "true") {
+    fastify.register(require('fastify-rate-limit'), {
+        max: parseInt(process.env.RATELIMIT_MAX),
+        timeWindow: parseInt(process.env.RATELIMIT_WINDOW)
+    });
+}
 
 fastify.get('/', async (request, reply) => {
     return {
