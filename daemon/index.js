@@ -81,9 +81,9 @@ fastify.get('/', async (request, reply) => {
 });
 
 fastify.post('/run', (request, reply) => {
-    const res = reply.res;
+    const res = reply.raw;
     reply.header('Content-Type', 'text/plain');
-    if (!request.headers.authorization || (process.env.AUTH_ENABLE === "true" && process.env.AUTH_TOKEN !== request.headers.authorization.split(' ')[1])) {
+    if ((!request.headers.authorization && process.env.AUTH_ENABLE === "true") || (process.env.AUTH_ENABLE === "true" && process.env.AUTH_TOKEN !== request.headers.authorization.split(' ')[1])) {
         return reply.code(401).send('Invalid authorization header.');
     }
     const { command, payload } = request.body;
