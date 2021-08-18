@@ -81,12 +81,10 @@ fastify.get('/', async (request, reply) => {
 });
 
 fastify.post('/run', (request, reply) => {
+    const res = reply.res;
+    reply.header('Content-Type', 'text/plain');
     if (!request.headers.authorization || (process.env.AUTH_ENABLE === "true" && process.env.AUTH_TOKEN !== request.headers.authorization.split(' ')[1])) {
-        return reply.code(401).send({
-            success: false,
-            code: 702,
-            error: 'Invalid authorization header'
-        });
+        return reply.code(401).send('Invalid authorization header.');
     }
     const { command, payload } = request.body;
     if (isIp(payload) || isValidDomain(payload)) {
@@ -112,7 +110,7 @@ fastify.post('/run', (request, reply) => {
                 break;
             case "ping":
                 args = [ "-c", "4", "-w15", payload ]
-                cmd = "/bin/ping";
+                cmd = "ping";
                 break;
             case "ping6":
                 args = [ "-c", "4", "-w15", payload ]
@@ -121,29 +119,15 @@ fastify.post('/run', (request, reply) => {
         }
     
         let subprocess = spawn(cmd, args);
-        let stderr = '';
-        let stdout = '';
         subprocess.stdout.on('data', function(data) {
-            stdout += data;
-        });
-        subprocess.stderr.on('data', function(data) {
-            stderr += data;
+            res.write(data);
         });
         subprocess.on('close', function(exitCode) {
-            reply.code(200).send({
-                success: true,
-                code: 700,
-                stdout,
-                stderr
-            });
+            res.end();
         });
     }
     else {
-        reply.code(400).send({
-            success: false,
-            code: 701,
-            error: 'Invalid IP address / hostname.'
-        });
+        reply.code(400).send('Invalid hostname / IP address.');
     }
 });
 
